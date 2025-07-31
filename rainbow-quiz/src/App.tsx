@@ -1,11 +1,22 @@
 import { useState } from 'react'
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import Modal from './components/modal';
+import Button from './components/button';
 
 function App() {
     const [menuOpen, setMenuOpen] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
 
     const toggleMenu = () => {
         setMenuOpen(!menuOpen);
+    };
+
+    const handleOpenDeleteModal = () => {
+        setShowDeleteModal(true);
+    };
+
+    const handleCloseDeleteModal = () => {
+        setShowDeleteModal(false);
     };
 
     return (
@@ -56,13 +67,32 @@ function App() {
                         Test to see what flavour of rainbow you are!
                     </p>
 
-                    <button className="mt-10 font-semibold rounded-md py-3 px-6 text-lg md:text-xl
-                from-pink-400 to-teal-400 text-white bg-gradient-to-r animate-text
-                hover:from-pink-200 hover:to-teal-200 transition-colors duration-300">
+                    <Button
+                        className="mt-8"
+                        onClick={handleOpenDeleteModal}
+                    >
                         Let's Start
-                    </button>
+                    </Button>
                 </div>
 
+                <Modal
+                    isOpen={showDeleteModal}
+                    onClose={handleCloseDeleteModal}
+                >
+                    <div className="flex flex-col items-left">
+                        <h1 className="text-3xl my-4">Please note:</h1>
+                        <p className="mb-4">This is <strong>NOT</strong> a scientific test.</p>
+                        <p className="mb-4">
+                            This quiz is a fun way to visualise sexuality and share with friends and show
+                            that everyone is unique and different. It is not a serious test and should not be taken as such.
+                        </p>
+                        <Button
+                            className="max-w-40 self-center"
+                        >
+                            Continue
+                        </Button>
+                    </div>
+                </Modal>
 
                 <Routes>
                     <Route path="/" element={<QuizPage />} />
