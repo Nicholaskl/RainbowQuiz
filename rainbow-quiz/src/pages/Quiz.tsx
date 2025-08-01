@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-// import { useNavigate } from 'react-router-dom'; // Removed as requested
+import { useState, useEffect } from 'react';
 import { questions, type Question } from '../questions'; // Import questions and the Question interface
 import Button from '../components/button'; // Assuming you have a Button component
 import ColourText from '../components/colourtext';
@@ -41,7 +40,6 @@ function QuizPage() {
     const [quizColor, setQuizColor] = useState<string>('#FFFFFF'); // State to store the final hex color
     const [copyMessage, setCopyMessage] = useState<string>(''); // State for copy confirmation message
     const [sliderValue, setSliderValue] = useState<number>(2); // State for the current slider value, defaults to 'Sometimes' (0 score)
-    // const navigate = useNavigate(); // Removed as requested
 
     // Map answer option values to their corresponding scores
     const answerOptionValuesToScores: { [key: number]: number } = {
