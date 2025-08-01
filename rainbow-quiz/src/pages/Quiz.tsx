@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { questions, type Question } from '../questions'; // Import questions and the Question interface
 import Button from '../components/button'; // Assuming you have a Button component
-import { questions, type Question } from '../questions';
 
 // Define the structure for storing user answers
 interface UserAnswer {
@@ -17,6 +17,16 @@ interface CategoryScores {
     SEXUAL: number;
     ROMANTIC: number;
     DEGREE: number;
+}
+
+// Helper function to convert HSB to RGB
+// H: 0-360, S: 0-100, B: 0-100
+function hsbToRgb(h: number, s: number, b: number): [number, number, number] {
+    s /= 100;
+    b /= 100;
+    const k = (n: number) => (n + h / 60) % 6;
+    const f = (n: number) => b * (1 - s * Math.max(0, Math.min(k(n), 4 - k(n), 1)));
+    return [255 * f(5), 255 * f(3), 255 * f(1)].map(Math.round) as [number, number, number];
 }
 
 function QuizPage() {
@@ -69,11 +79,12 @@ function QuizPage() {
 
             setCategoryScores(newCategoryScores);
 
-            // --- Color Calculation Logic ---
-            const normalizeScore = (score: number, category: 'SEXUAL' | 'ROMANTIC' | 'DEGREE', outputMin: number = 0, outputMax: number = 255): number => {
+            // --- Color Calculation Logic (HSB) ---
+            // Normalizes a score from its possible min/max range to a desired output range.
+            const normalizeScore = (score: number, category: 'SEXUAL' | 'ROMANTIC' | 'DEGREE', outputMin: number, outputMax: number): number => {
                 const numQuestions = categoryQuestionCounts[category];
                 if (numQuestions === 0) {
-                    return Math.round((outputMin + outputMax) / 2); // Return mid-range if no questions in category
+                    return (outputMin + outputMax) / 2; // Return mid-range if no questions in category
                 }
 
                 const minPossibleScore = numQuestions * -3; // Min score for this category
@@ -81,7 +92,7 @@ function QuizPage() {
 
                 // Avoid division by zero if min and max are the same (e.g., only one question with 0 score)
                 if (maxPossibleScore === minPossibleScore) {
-                    return Math.round((outputMin + outputMax) / 2);
+                    return (outputMin + outputMax) / 2;
                 }
 
                 // Normalize score to a 0-1 range
@@ -89,24 +100,38 @@ function QuizPage() {
 
                 // Scale to the desired output range and clamp
                 const scaled = normalized * (outputMax - outputMin) + outputMin;
-                return Math.round(Math.max(outputMin, Math.min(outputMax, scaled)));
+                return Math.max(outputMin, Math.min(outputMax, scaled));
             };
 
             const toHex = (c: number): string => {
-                const hex = c.toString(16);
+                const hex = Math.round(c).toString(16); // Ensure integer for hex conversion
                 return hex.length === 1 ? "0" + hex : hex;
             };
 
-            // Option: Adjust the range for color values to avoid very dark/light colors
-            const COLOR_MIN = 50; // Minimum RGB value
-            const COLOR_MAX = 200; // Maximum RGB value
+            // Normalize each category score to HSB components
+            // Hue (H): Influenced by ROMANTIC score, mapped to a vibrant spectrum (e.g., 270 (purple) to 30 (orange))
+            const HUE_MIN = 40; // Pink
+            const HUE_MAX = 300;  // Orange (wraps around 0/360)
+            const normalisedSexual = normalizeScore(newCategoryScores.SEXUAL, 'SEXUAL', 0, 1);
+            let hue;
+            if (HUE_MIN > HUE_MAX) { // Handles wrapping around 360 (e.g., 270 to 30)
+                hue = (normalisedSexual * (360 - HUE_MIN + HUE_MAX) + HUE_MIN) % 360;
+            } else {
+                hue = normalisedSexual * (HUE_MAX - HUE_MIN) + HUE_MIN;
+            }
 
-            // Normalize each category score to an RGB component
-            const red = normalizeScore(newCategoryScores.SEXUAL, 'SEXUAL', COLOR_MIN, COLOR_MAX);
-            const green = normalizeScore(newCategoryScores.ROMANTIC, 'ROMANTIC', COLOR_MIN, COLOR_MAX);
-            const blue = normalizeScore(newCategoryScores.DEGREE, 'DEGREE', COLOR_MIN, COLOR_MAX);
+            // Saturation (S): Influenced by ROMANTIC score, mapped to a high saturation range (e.g., 50% to 100%)
+            const SAT_MIN = 100;
+            const SAT_MAX = 60;
+            const saturation = normalizeScore(newCategoryScores.ROMANTIC, 'ROMANTIC', SAT_MIN, SAT_MAX);
 
-            setQuizColor(`#${toHex(red)}${toHex(green)}${toHex(blue)}`);
+            // Brightness (B): Influenced by DEGREE score, mapped to a bright range (e.g., 70% to 100%)
+            const BRIGHT_MIN = 100;
+            const BRIGHT_MAX = 70;
+            const brightness = normalizeScore(newCategoryScores.DEGREE, 'DEGREE', BRIGHT_MIN, BRIGHT_MAX);
+
+            const [r, g, b] = hsbToRgb(hue, saturation, brightness);
+            setQuizColor(`#${toHex(r)}${toHex(g)}${toHex(b)}`);
 
         }
     }, [isQuizComplete, userAnswers]); // Recalculate when quiz is complete or answers change
@@ -128,6 +153,7 @@ function QuizPage() {
 
         setUserAnswers((prevAnswers) => [...prevAnswers, newAnswer]);
         setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
+        console.debug("Score Contribution", scoreContribution)
     };
 
     const handleRestartQuiz = () => {
@@ -196,7 +222,7 @@ function QuizPage() {
                                 </p>
                             )}
                             <p className="text-sm text-gray-600 mt-2">
-                                (Sexual: Red, Romantic: Green, Degree: Blue)
+                                (Romantic: Hue, Sexual: Saturation, Degree: Brightness)
                             </p>
                         </div>
 

@@ -10,103 +10,112 @@ export interface Question {
 // The raw questions data provided by the user, with mixed structures
 const rawQuestions = [
     {
-        quesText: 'Found myself sexually aroused by a member of the same sex',
+        quesText: 'I’ve felt sexually aroused by someone of the same gender.',
         quesType: 'SEXUAL',
         flipped: false
     },
     {
-        quesText: 'Fantasized about non-sexual petting and/or bodily closeness with a member of the opposite sex',
+        quesText: 'I’ve fantasized about intimate, non-sexual physical closeness with someone of a different gender.',
         quesType: 'ROMANTIC',
         flipped: true
     },
     {
-        quesText: 'Fantasized about non-sexual petting and/or bodily closeness with the same sex',
+        quesText: 'I’ve fantasized about intimate, non-sexual physical closeness with someone of the same gender.',
         quesType: 'ROMANTIC',
         flipped: false
     },
-    ,
     {
-        quesText: 'Found myself sexually aroused by a member of the same sex',
+        quesText: 'I’ve wanted to be physically intimate or naked in the company of someone of the same gender.',
         quesType: 'SEXUAL',
         flipped: false
     },
     {
-        quesText: 'Wanted to touch the Same sex intimately and/or be naked in the company of the same sex',
-        quesType: 'SEXUAL',
-        flipped: false
-    },
-    {
-        quesText: 'Thought about being in a relationship with someone',
+        quesText: 'I’ve thought about being in a committed relationship with someone.',
         quesType: 'DEGREE',
         flipped: false
     },
     {
-        quesText: 'Entertained the fantasy of being in a long-term romantic relationship with a member of the same sex',
+        quesText: 'I’ve entertained the fantasy of a long-term romantic relationship with someone of the same gender.',
         quesType: 'ROMANTIC',
         flipped: false
     },
     {
-        quesText: 'Entertained the notion of going on a date with someone',
+        quesText: 'I’ve considered going on a date with someone.',
         quesType: 'DEGREE',
         flipped: false
     },
     {
-        quesText: 'Thought about going on a date with someone of the same sex',
+        quesText: 'I’ve thought about going on a date with someone of the same gender.',
         quesType: 'ROMANTIC',
         flipped: false
     },
     {
-        quesText: 'Found myself wanting to have real-life sexual intercourse with a member of the same sex',
+        quesText: 'I’ve wanted to have sexual intercourse with someone of the same gender.',
         quesType: 'SEXUAL',
         flipped: false
     },
     {
-        quesText: 'Wanted to engage in mild sexual acts with a member of the opposite sex (e.g. Kissing)',
-        quesType: 'ROMANTIC',
-        flipped: true
-    },
-    {
-        quesText: 'Found myself sexually attracted to someone',
+        quesText: 'My thoughts frequently turn to sexual fantasies or desires.', // To help gauge the hypersexual end
         quesType: 'DEGREE',
         flipped: false
     },
     {
-        quesText: 'Entertained the fantasy of being in a long-term romantic relationship with a member of the opposite sex',
+        quesText: 'I’ve wanted to engage in mild sexual acts (e.g., kissing) with someone of a different gender.',
         quesType: 'ROMANTIC',
         flipped: true
     },
     {
-        quesText: 'Found a member of the opposite sex attractive',
-        quesType: 'SEXUAL',
-        flipped: true
-    },
-    {
-        quesText: 'Wanted to engage in mild sexual acts with a member of the same sex (e.g. Kissing)',
-        quesType: 'ROMANTIC',
-        flipped: false
-    },
-    {
-        quesText: 'Wanted to touch the opposite sex intimately and/or be naked in the company of the opposite sex',
-        quesType: 'SEXUAL',
-        flipped: true
-    },
-    {
-        quesText: 'Fantasized about non-sexual petting and/or bodily closeness with someone',
+        quesText: 'I’ve felt sexually attracted to someone.',
         quesType: 'DEGREE',
         flipped: false
     },
     {
-        quesText: 'Thought about going on a date with someone of the opposite sex',
+        quesText: 'I’ve entertained the fantasy of a long-term romantic relationship with someone of a different gender.',
         quesType: 'ROMANTIC',
         flipped: true
     },
     {
-        quesText: 'Found myself wanting to have real-life sexual intercourse with a member of the opposite sex',
+        quesText: 'I’ve found someone of a different gender to be sexually attractive.',
         quesType: 'SEXUAL',
         flipped: true
     },
     {
-        quesText: 'Fantasized about a sexual act',
+        quesText: 'I rarely feel the urge to engage in sexual activity.', // To help gauge the asexual end
+        quesType: 'DEGREE',
+        flipped: true
+    },
+    {
+        quesText: 'I’ve wanted to engage in mild sexual acts (e.g., kissing) with someone of the same gender.',
+        quesType: 'ROMANTIC',
+        flipped: false
+    },
+    {
+        quesText: 'I feel a general sense of romantic or sexual attraction towards people.',
+        quesType: 'DEGREE',
+        flipped: false
+    },
+    {
+        quesText: 'I’ve wanted to be physically intimate or naked in the company of someone of a different gender.',
+        quesType: 'SEXUAL',
+        flipped: true
+    },
+    {
+        quesText: 'I’ve fantasized about intimate, non-sexual physical closeness with someone.',
+        quesType: 'DEGREE',
+        flipped: false
+    },
+    {
+        quesText: 'I’ve thought about going on a date with someone of a different gender.',
+        quesType: 'ROMANTIC',
+        flipped: true
+    },
+    {
+        quesText: 'I’ve wanted to have sexual intercourse with someone of a different gender.',
+        quesType: 'SEXUAL',
+        flipped: true
+    },
+    {
+        quesText: 'I’ve fantasized about a sexual act.',
         quesType: 'DEGREE',
         flipped: false
     },
