@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { questions, type Question } from '../questions'; // Import questions and the Question interface
 import Button from '../components/button'; // Assuming you have a Button component
 
@@ -39,6 +38,7 @@ function QuizPage() {
     });
     const [quizColor, setQuizColor] = useState<string>('#FFFFFF'); // State to store the final hex color
     const [copyMessage, setCopyMessage] = useState<string>(''); // State for copy confirmation message
+    const [sliderValue, setSliderValue] = useState<number>(2); // State for the current slider value, defaults to 'Sometimes' (0 score)
 
     // Map answer option values to their corresponding scores
     const answerOptionValuesToScores: { [key: number]: number } = {
@@ -60,6 +60,13 @@ function QuizPage() {
 
     const currentQuestion: Question | undefined = questions[currentQuestionIndex];
     const isQuizComplete = currentQuestionIndex >= questions.length;
+
+    // Reset slider value when moving to a new question
+    useEffect(() => {
+        if (!isQuizComplete) {
+            setSliderValue(2); // Reset to 'Sometimes' for the new question
+        }
+    }, [currentQuestionIndex, isQuizComplete]);
 
     // Calculate category scores and the final color when the quiz is complete
     useEffect(() => {
@@ -110,24 +117,24 @@ function QuizPage() {
 
             // Normalize each category score to HSB components
             // Hue (H): Influenced by ROMANTIC score, mapped to a vibrant spectrum (e.g., 270 (purple) to 30 (orange))
-            const HUE_MIN = 40; // Pink
-            const HUE_MAX = 300;  // Orange (wraps around 0/360)
-            const normalisedSexual = normalizeScore(newCategoryScores.SEXUAL, 'SEXUAL', 0, 1);
+            const HUE_MIN = 270; // Purple
+            const HUE_MAX = 30;  // Orange (wraps around 0/360)
+            const normalizedRomantic = normalizeScore(newCategoryScores.ROMANTIC, 'ROMANTIC', 0, 1);
             let hue;
             if (HUE_MIN > HUE_MAX) { // Handles wrapping around 360 (e.g., 270 to 30)
-                hue = (normalisedSexual * (360 - HUE_MIN + HUE_MAX) + HUE_MIN) % 360;
+                hue = (normalizedRomantic * (360 - HUE_MIN + HUE_MAX) + HUE_MIN) % 360;
             } else {
-                hue = normalisedSexual * (HUE_MAX - HUE_MIN) + HUE_MIN;
+                hue = normalizedRomantic * (HUE_MAX - HUE_MIN) + HUE_MIN;
             }
 
-            // Saturation (S): Influenced by ROMANTIC score, mapped to a high saturation range (e.g., 50% to 100%)
-            const SAT_MIN = 100;
-            const SAT_MAX = 60;
-            const saturation = normalizeScore(newCategoryScores.ROMANTIC, 'ROMANTIC', SAT_MIN, SAT_MAX);
+            // Saturation (S): Influenced by SEXUAL score, mapped to a high saturation range (e.g., 50% to 100%)
+            const SAT_MIN = 50;
+            const SAT_MAX = 100;
+            const saturation = normalizeScore(newCategoryScores.SEXUAL, 'SEXUAL', SAT_MIN, SAT_MAX);
 
             // Brightness (B): Influenced by DEGREE score, mapped to a bright range (e.g., 70% to 100%)
-            const BRIGHT_MIN = 100;
-            const BRIGHT_MAX = 70;
+            const BRIGHT_MIN = 70;
+            const BRIGHT_MAX = 100;
             const brightness = normalizeScore(newCategoryScores.DEGREE, 'DEGREE', BRIGHT_MIN, BRIGHT_MAX);
 
             const [r, g, b] = hsbToRgb(hue, saturation, brightness);
@@ -135,6 +142,11 @@ function QuizPage() {
 
         }
     }, [isQuizComplete, userAnswers]); // Recalculate when quiz is complete or answers change
+
+    const handleSubmitAnswer = () => {
+        // Use the current sliderValue as the selectedAnswerValue
+        handleAnswer(sliderValue);
+    };
 
     const handleAnswer = (selectedAnswerValue: number) => {
         if (!currentQuestion) return;
@@ -153,7 +165,6 @@ function QuizPage() {
 
         setUserAnswers((prevAnswers) => [...prevAnswers, newAnswer]);
         setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
-        console.debug("Score Contribution", scoreContribution)
     };
 
     const handleRestartQuiz = () => {
@@ -162,6 +173,7 @@ function QuizPage() {
         setCategoryScores({ SEXUAL: 0, ROMANTIC: 0, DEGREE: 0 });
         setQuizColor('#FFFFFF');
         setCopyMessage(''); // Clear copy message on restart
+        setSliderValue(2); // Reset slider for the first question
     };
 
     const copyColorToClipboard = () => {
@@ -239,23 +251,31 @@ function QuizPage() {
                             Question {currentQuestionIndex + 1} of {questions.length}
                         </p>
                         <h2 className="text-2xl md:text-3xl font-semibold mb-6 text-gray-800">
-                            {currentQuestion?.quesText} {/* Use quesText */}
+                            {currentQuestion?.quesText}
                         </h2>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {answerOptions.map((option) => (
-                                <Button
-                                    key={option.value}
-                                    onClick={() => handleAnswer(option.value)}
-                                    className="w-full py-3 px-4 rounded-lg text-lg font-medium
-                                               bg-gradient-to-r from-purple-400 to-pink-500 text-white
-                                               hover:from-purple-500 hover:to-pink-600
-                                               transition-all duration-300 ease-in-out transform hover:scale-105
-                                               shadow-md hover:shadow-lg"
-                                >
-                                    {option.text}
-                                </Button>
-                            ))}
+                        <div className="flex flex-col items-center w-full max-w-md mx-auto">
+                            <input
+                                type="range"
+                                min="0"
+                                max="4"
+                                value={sliderValue}
+                                onChange={(e) => setSliderValue(Number(e.target.value))}
+                                className="w-full h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer accent-purple-500"
+                            />
+                            <p className="mt-2 text-lg font-medium text-gray-700">
+                                {answerOptions.find(opt => opt.value === sliderValue)?.text}
+                            </p>
+                            <Button
+                                onClick={handleSubmitAnswer}
+                                className="mt-6 w-full py-3 px-4 rounded-lg text-lg font-medium
+                                           bg-gradient-to-r from-green-400 to-blue-500 text-white
+                                           hover:from-green-500 hover:to-blue-600
+                                           transition-all duration-300 ease-in-out transform hover:scale-105
+                                           shadow-md hover:shadow-lg"
+                            >
+                                Submit Answer
+                            </Button>
                         </div>
                     </>
                 )}
