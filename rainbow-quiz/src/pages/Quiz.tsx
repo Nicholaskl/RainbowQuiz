@@ -252,13 +252,13 @@ function QuizPage() {
                         <p className="text-sm text-gray-500 mb-2">
                             Question {currentQuestionIndex + 1} of {questions.length}
                         </p>
-                        <h2 className="text-2xl md:text-3xl font-semibold mb-6 text-gray-800">
+                        <h2 className="text-2xl md:text-3xl font-semibold mb-6 text-gray-800 pb-6">
                             {currentQuestion?.quesText}
                         </h2>
 
                         <div className="flex flex-col items-center w-full max-w-md mx-auto relative">
                             {/* Labels above the slider */}
-                            <div className="absolute -top-6 left-0 right-0 flex justify-between text-xs text-gray-600 px-1">
+                            <div className="absolute -top-7 left-0 right-0 flex justify-between text-xs text-gray-600 px-1">
                                 {answerOptions.map((option) => (
                                     <span key={option.value} className="min-w-[40px] text-center">
                                         {option.text}
@@ -271,12 +271,11 @@ function QuizPage() {
                                 max="4"
                                 value={sliderValue}
                                 onChange={(e) => setSliderValue(Number(e.target.value))}
-                                className="w-full h-2 rounded-lg appearance-none cursor-pointer
+                                className="w-full h-2 pb-4 rounded-lg appearance-none cursor-pointer
                                            [&::-webkit-slider-runnable-track]:bg-gradient-to-r
-                                           [&::-webkit-slider-runnable-track]:from-red-400
-                                           [&::-webkit-slider-runnable-track]:via-yellow-400
-                                           [&::-webkit-slider-runnable-track]:to-blue-400
-                                           [&::-webkit-slider-runnable-track]:h-2
+                                           [&::-webkit-slider-runnable-track]:from-pink-400
+                                           [&::-webkit-slider-runnable-track]:to-teal-400
+                                           [&::-webkit-slider-runnable-track]:h-1.5
                                            [&::-webkit-slider-runnable-track]:rounded-lg
                                            [&::-webkit-slider-thumb]:bg-purple-600
                                            [&::-webkit-slider-thumb]:w-5
@@ -285,29 +284,19 @@ function QuizPage() {
                                            [&::-webkit-slider-thumb]:appearance-none
                                            [&::-webkit-slider-thumb]:-mt-[6px]
                                            [&::-moz-range-track]:bg-gradient-to-r
-                                           [&::-moz-range-track]:from-red-400
-                                           [&::-moz-range-track]:via-yellow-400
-                                           [&::-moz-range-track]:to-blue-400
-                                           [&::-moz-range-track]:h-2
+                                           [&::-moz-range-track]:from-pink-400
+                                           [&::-moz-range-track]:to-teal-400
+                                           [&::-moz-range-track]:h-1.5
                                            [&::-moz-range-track]:rounded-lg
-                                           [&::-moz-range-thumb]:bg-purple-600
+                                           [&::-moz-range-thumb]:bg-slate-200
                                            [&::-moz-range-thumb]:w-5
                                            [&::-moz-range-thumb]:h-5
                                            [&::-moz-range-thumb]:rounded-full
-                                           [&::-moz-range-thumb]:border-none
                                            [&::-moz-range-thumb]:-mt-[6px]
                                            "
                             />
-                            <p className="mt-2 text-lg font-medium text-gray-700">
-                                {answerOptions.find(opt => opt.value === sliderValue)?.text}
-                            </p>
                             <Button
                                 onClick={handleSubmitAnswer}
-                                className="mt-6 w-full py-3 px-4 rounded-lg text-lg font-medium
-                                           bg-gradient-to-r from-green-400 to-blue-500 text-white
-                                           hover:from-green-500 hover:to-blue-600
-                                           transition-all duration-300 ease-in-out transform hover:scale-105
-                                           shadow-md hover:shadow-lg"
                             >
                                 Submit Answer
                             </Button>
