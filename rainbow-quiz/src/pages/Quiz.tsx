@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 // import { useNavigate } from 'react-router-dom'; // Removed as requested
 import { questions, type Question } from '../questions'; // Import questions and the Question interface
 import Button from '../components/button'; // Assuming you have a Button component
+import ColourText from '../components/colourtext';
 
 // Define the structure for storing user answers
 interface UserAnswer {
@@ -201,11 +202,13 @@ function QuizPage() {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-8">
-            <div className="bg-white p-12 rounded-lg max-w-4xl w-full text-center">
+        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
+            <div className="bg-white p-8 lg:p-12 rounded-lg max-w-4xl w-full text-center">
                 {isQuizComplete ? (
                     <div className="flex flex-col items-center justify-center">
-                        <h2 className="text-4xl font-bold text-teal-600 mb-4">Quiz Complete!</h2>
+                        <ColourText className="text-4xl lg:text-6xl">
+                            Quiz Complete!
+                        </ColourText>
                         <p className="text-lg text-gray-700 mb-6">Your Rainbow Quiz Results:</p>
 
                         <div className="mb-6 w-full max-w-sm mx-auto">
@@ -258,7 +261,7 @@ function QuizPage() {
 
                         <div className="flex flex-col items-center w-full max-w-xl mx-auto relative">
                             {/* Labels above the slider */}
-                            <div className="absolute -top-7 left-0 right-0 flex justify-between text-xs text-gray-600 px-1">
+                            <div className="absolute -top-7 left-0 right-0 flex justify-between text-[10px] md:text-xs text-gray-600">
                                 {answerOptions.map((option) => (
                                     <span key={option.value} className="min-w-[40px] text-center">
                                         {option.text}

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Button from "../components/button";
 import Modal from "../components/modal";
+import ColourText from "../components/colourtext";
 
 // Define the type for the props HomePage expects (reusing NavigablePageProps from App.tsx conceptual level)
 interface HomePageProps {
@@ -37,11 +38,9 @@ function HomePage({ onNavigate }: HomePageProps) {
                     This prevents the text from overflowing on smaller viewports by starting small
                     and scaling up.
                 */}
-                <h1 className="text-5xl font-bold text-center md:text-7xl lg:text-9xl
-                bg-gradient-to-r from-pink-400 to-teal-400 
-                text-transparent bg-clip-text animate-text">
+                <ColourText className="text-5xl md:text-7xl lg:text-9xl">
                     Rainbow Quiz
-                </h1>
+                </ColourText>
 
                 <p className="mt-4 text-lg text-center text-gray-600 md:text-2xl">
                     Test to see what flavour of rainbow you are!
