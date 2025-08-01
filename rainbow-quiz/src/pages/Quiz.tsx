@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+// import { useNavigate } from 'react-router-dom'; // Removed as requested
 import { questions, type Question } from '../questions'; // Import questions and the Question interface
 import Button from '../components/button'; // Assuming you have a Button component
 
@@ -39,6 +40,7 @@ function QuizPage() {
     const [quizColor, setQuizColor] = useState<string>('#FFFFFF'); // State to store the final hex color
     const [copyMessage, setCopyMessage] = useState<string>(''); // State for copy confirmation message
     const [sliderValue, setSliderValue] = useState<number>(2); // State for the current slider value, defaults to 'Sometimes' (0 score)
+    // const navigate = useNavigate(); // Removed as requested
 
     // Map answer option values to their corresponding scores
     const answerOptionValuesToScores: { [key: number]: number } = {
@@ -254,14 +256,47 @@ function QuizPage() {
                             {currentQuestion?.quesText}
                         </h2>
 
-                        <div className="flex flex-col items-center w-full max-w-md mx-auto">
+                        <div className="flex flex-col items-center w-full max-w-md mx-auto relative">
+                            {/* Labels above the slider */}
+                            <div className="absolute -top-6 left-0 right-0 flex justify-between text-xs text-gray-600 px-1">
+                                {answerOptions.map((option) => (
+                                    <span key={option.value} className="min-w-[40px] text-center">
+                                        {option.text}
+                                    </span>
+                                ))}
+                            </div>
                             <input
                                 type="range"
                                 min="0"
                                 max="4"
                                 value={sliderValue}
                                 onChange={(e) => setSliderValue(Number(e.target.value))}
-                                className="w-full h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer accent-purple-500"
+                                className="w-full h-2 rounded-lg appearance-none cursor-pointer
+                                           [&::-webkit-slider-runnable-track]:bg-gradient-to-r
+                                           [&::-webkit-slider-runnable-track]:from-red-400
+                                           [&::-webkit-slider-runnable-track]:via-yellow-400
+                                           [&::-webkit-slider-runnable-track]:to-blue-400
+                                           [&::-webkit-slider-runnable-track]:h-2
+                                           [&::-webkit-slider-runnable-track]:rounded-lg
+                                           [&::-webkit-slider-thumb]:bg-purple-600
+                                           [&::-webkit-slider-thumb]:w-5
+                                           [&::-webkit-slider-thumb]:h-5
+                                           [&::-webkit-slider-thumb]:rounded-full
+                                           [&::-webkit-slider-thumb]:appearance-none
+                                           [&::-webkit-slider-thumb]:-mt-[6px]
+                                           [&::-moz-range-track]:bg-gradient-to-r
+                                           [&::-moz-range-track]:from-red-400
+                                           [&::-moz-range-track]:via-yellow-400
+                                           [&::-moz-range-track]:to-blue-400
+                                           [&::-moz-range-track]:h-2
+                                           [&::-moz-range-track]:rounded-lg
+                                           [&::-moz-range-thumb]:bg-purple-600
+                                           [&::-moz-range-thumb]:w-5
+                                           [&::-moz-range-thumb]:h-5
+                                           [&::-moz-range-thumb]:rounded-full
+                                           [&::-moz-range-thumb]:border-none
+                                           [&::-moz-range-thumb]:-mt-[6px]
+                                           "
                             />
                             <p className="mt-2 text-lg font-medium text-gray-700">
                                 {answerOptions.find(opt => opt.value === sliderValue)?.text}
