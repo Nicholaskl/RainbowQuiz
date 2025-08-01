@@ -119,20 +119,20 @@ function QuizPage() {
 
             // Normalize each category score to HSB components
             // Hue (H): Influenced by ROMANTIC score, mapped to a vibrant spectrum (e.g., 270 (purple) to 30 (orange))
-            const HUE_MIN = 270; // Purple
-            const HUE_MAX = 30;  // Orange (wraps around 0/360)
-            const normalizedRomantic = normalizeScore(newCategoryScores.ROMANTIC, 'ROMANTIC', 0, 1);
+            const HUE_MIN = 40; // Purple
+            const HUE_MAX = 300;  // Orange (wraps around 0/360)
+            const normalizedSexual = normalizeScore(newCategoryScores.SEXUAL, 'SEXUAL', 0, 1);
             let hue;
             if (HUE_MIN > HUE_MAX) { // Handles wrapping around 360 (e.g., 270 to 30)
-                hue = (normalizedRomantic * (360 - HUE_MIN + HUE_MAX) + HUE_MIN) % 360;
+                hue = (normalizedSexual * (360 - HUE_MIN + HUE_MAX) + HUE_MIN) % 360;
             } else {
-                hue = normalizedRomantic * (HUE_MAX - HUE_MIN) + HUE_MIN;
+                hue = normalizedSexual * (HUE_MAX - HUE_MIN) + HUE_MIN;
             }
 
             // Saturation (S): Influenced by SEXUAL score, mapped to a high saturation range (e.g., 50% to 100%)
             const SAT_MIN = 50;
             const SAT_MAX = 100;
-            const saturation = normalizeScore(newCategoryScores.SEXUAL, 'SEXUAL', SAT_MIN, SAT_MAX);
+            const saturation = normalizeScore(newCategoryScores.ROMANTIC, 'ROMANTIC', SAT_MIN, SAT_MAX);
 
             // Brightness (B): Influenced by DEGREE score, mapped to a bright range (e.g., 70% to 100%)
             const BRIGHT_MIN = 70;
@@ -201,8 +201,8 @@ function QuizPage() {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
-            <div className="bg-white p-8 rounded-lg shadow-xl max-w-2xl w-full text-center">
+        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-8">
+            <div className="bg-white p-12 rounded-lg max-w-4xl w-full text-center">
                 {isQuizComplete ? (
                     <div className="flex flex-col items-center justify-center">
                         <h2 className="text-4xl font-bold text-teal-600 mb-4">Quiz Complete!</h2>
@@ -236,7 +236,7 @@ function QuizPage() {
                                 </p>
                             )}
                             <p className="text-sm text-gray-600 mt-2">
-                                (Romantic: Hue, Sexual: Saturation, Degree: Brightness)
+                                (Sexual: Hue, Romantic: Saturation, Degree: Brightness)
                             </p>
                         </div>
 
@@ -249,14 +249,14 @@ function QuizPage() {
                     </div>
                 ) : (
                     <>
-                        <p className="text-sm text-gray-500 mb-2">
+                        <p className="text-md text-gray-500 mb-2">
                             Question {currentQuestionIndex + 1} of {questions.length}
                         </p>
-                        <h2 className="text-2xl md:text-3xl font-semibold mb-6 text-gray-800 pb-6">
+                        <h2 className="text-2xl md:text-4xl font-semibold mb-6 text-gray-800 pb-8">
                             {currentQuestion?.quesText}
                         </h2>
 
-                        <div className="flex flex-col items-center w-full max-w-md mx-auto relative">
+                        <div className="flex flex-col items-center w-full max-w-xl mx-auto relative">
                             {/* Labels above the slider */}
                             <div className="absolute -top-7 left-0 right-0 flex justify-between text-xs text-gray-600 px-1">
                                 {answerOptions.map((option) => (
@@ -271,7 +271,7 @@ function QuizPage() {
                                 max="4"
                                 value={sliderValue}
                                 onChange={(e) => setSliderValue(Number(e.target.value))}
-                                className="w-full h-2 pb-4 rounded-lg appearance-none cursor-pointer
+                                className="w-full h-2 pb-8 rounded-lg appearance-none cursor-pointer
                                            [&::-webkit-slider-runnable-track]:bg-gradient-to-r
                                            [&::-webkit-slider-runnable-track]:from-pink-400
                                            [&::-webkit-slider-runnable-track]:to-teal-400
