@@ -1,6 +1,6 @@
 // src/components/Modal.tsx
 import React, { useEffect, useRef } from 'react';
-import { createPortal } from 'react-dom';
+
 
 interface ModalProps {
     isOpen: boolean; // Controls whether the modal is visible
@@ -38,7 +38,7 @@ const Modal: React.FC<ModalProps> = ({
 
     if (!isOpen) return null;
 
-    return createPortal(
+    return (
         <div
             className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4"
             aria-modal="true"
@@ -70,8 +70,7 @@ const Modal: React.FC<ModalProps> = ({
                 </div>
                 {children}
             </div>
-        </div>,
-        document.body // Portals render the modal directly into the document.body
+        </div>
     );
 };
 

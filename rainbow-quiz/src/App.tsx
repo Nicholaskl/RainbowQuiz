@@ -1,118 +1,80 @@
-import { useState } from 'react'
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import Modal from './components/modal';
-import Button from './components/button';
+import { useState, type ReactElement, isValidElement, cloneElement } from 'react'
+import HomePage from './pages/Home';
+import QuizPage from './pages/Quiz';
+
+const pageList = [
+    { label: 'Home', component: <HomePage /> },
+    { label: 'Quiz', component: <QuizPage /> },
+    // { label: 'Settings', component: <SettingsPage /> }
+] as const
+
+// Add 'Settings' as a possible PageName explicitly,
+// because it's a valid page even if not in pageList
+type PageName = typeof pageList[number]['label'] | 'Settings';
+
+// Define a type for the common navigation prop that all pages can receive
+interface NavigablePageProps {
+    onNavigate?: (pageName: PageName) => void;
+}
 
 function App() {
     const [menuOpen, setMenuOpen] = useState(false);
-    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [activePage, setActivePage] = useState<PageName>(pageList[0].label)
+
 
     const toggleMenu = () => {
         setMenuOpen(!menuOpen);
     };
 
-    const handleOpenDeleteModal = () => {
-        setShowDeleteModal(true);
+    const handlePageChange = (pageName: PageName) => {
+        setActivePage(pageName);
+        setMenuOpen(false); // Close the menu after selecting a page
     };
 
-    const handleCloseDeleteModal = () => {
-        setShowDeleteModal(false);
-    };
+    const activeComponent = (() => {
+        const foundPage = pageList.find(page => page.label === activePage);
+
+        if (foundPage && isValidElement(foundPage.component)) {
+            // Clone the component and pass the generic onNavigate prop
+            // We cast foundPage.component to ReactElement to satisfy cloneElement's type
+            return cloneElement(foundPage.component as ReactElement<NavigablePageProps>, {
+                onNavigate: handlePageChange // Pass the handlePageChange function itself
+            });
+        }
+        return null; // Or a default component/error message
+    })();
 
     return (
-        <Router>
-            <div>
-                <div className="absolute top-4 right-4">
-                    <button className="p-4 rounded-md bg-gray-300 hover:bg-gray-400 transition-colors duration-200 focus:outline-none"
-                        onClick={toggleMenu}>
-                        <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                        </svg>
-                    </button>
-                </div>
-
-                {menuOpen && (
-                    <div className="absolute top-16 right-4 bg-white shadow-md p-4 z-10 rounded-md">
-                        <ul>
-                            <li>
-                                <Link to="/" className="block py-2 px-4 text-lg hover:bg-gray-100">Quiz</Link>
-                            </li>
-                            <li>
-                                <Link to="/info" className="block py-2 px-4 text-lg hover:bg-gray-100">Info</Link>
-                            </li>
-                            <li>
-                                <Link to="/grid" className="block py-2 px-4 text-lg hover:bg-gray-100">Grid</Link>
-                            </li>
-                        </ul>
-                    </div>
-                )}
-
-                <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
-
-                    {/* 
-                    Responsive Font Sizing for the main heading:
-                    - `text-5xl`: This is the base size, applied on small (mobile) screens.
-                    - `md:text-7xl`: On medium screens (768px and up), the font size increases.
-                    - `lg:text-9xl`: On large screens (1024px and up), it uses the largest size.
-                    This prevents the text from overflowing on smaller viewports by starting small
-                    and scaling up.
-                */}
-                    <h1 className="text-5xl font-bold text-center md:text-7xl lg:text-9xl
-                bg-gradient-to-r from-pink-400 to-teal-400 
-                text-transparent bg-clip-text animate-text">
-                        Rainbow Quiz
-                    </h1>
-
-                    <p className="mt-4 text-lg text-center text-gray-600 md:text-2xl">
-                        Test to see what flavour of rainbow you are!
-                    </p>
-
-                    <Button
-                        className="mt-8"
-                        onClick={handleOpenDeleteModal}
-                    >
-                        Let's Start
-                    </Button>
-                </div>
-
-                <Modal
-                    isOpen={showDeleteModal}
-                    onClose={handleCloseDeleteModal}
-                >
-                    <div className="flex flex-col items-left">
-                        <h1 className="text-3xl my-4">Please note:</h1>
-                        <p className="mb-4">This is <strong>NOT</strong> a scientific test.</p>
-                        <p className="mb-4">
-                            This quiz is a fun way to visualise sexuality and share with friends and show
-                            that everyone is unique and different. It is not a serious test and should not be taken as such.
-                        </p>
-                        <Button
-                            className="max-w-40 self-center"
-                        >
-                            Continue
-                        </Button>
-                    </div>
-                </Modal>
-
-                <Routes>
-                    <Route path="/" element={<QuizPage />} />
-                    <Route path="/info" element={<InfoPage />} />
-                    <Route path="/grid" element={<GridPage />} />
-                </Routes>
+        <div>
+            <div className="absolute top-4 right-4">
+                <button className="p-4 rounded-md bg-gray-300 hover:bg-gray-400 transition-colors duration-200 focus:outline-none"
+                    onClick={toggleMenu}>
+                    <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
             </div>
-        </Router>
+
+            {menuOpen && (
+                <div className="absolute top-16 right-4 bg-white shadow-md p-4 z-10 rounded-md">
+                    <ul>
+                        <li>
+                            <button
+                                onClick={() => handlePageChange('Home')}
+                                className="block w-full text-left p-2 hover:bg-gray-100 rounded-md"
+                            >
+                                Home
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            )}
+
+            {activeComponent}
+
+
+        </div>
     )
 }
 
-function QuizPage() {
-    return <div></div>;
-}
-function InfoPage() {
-    return <div></div>;
-}
-function GridPage() {
-    return <div></div>;
-}
-
-export default App
-export { };
+export default App;
